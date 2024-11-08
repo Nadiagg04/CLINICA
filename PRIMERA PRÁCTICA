@@ -1,0 +1,168 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+
+class Veterinaria:
+    def __init__(self, root): # instancia de Tk de la biblioteca Tkinter
+        self.root = root
+        self.root.title("Clínica Veterinaria")
+        self.root.geometry("700x700")
+
+        # Listas guardar clientes y mascotas
+        self.clientes = []
+        self.mascotas = []
+
+        self.crear_formulario() #  interfaz
+
+    def crear_formulario(self):
+        # tabla clientes
+        ttk.Label(self.root, text="DNI del Cliente:").grid(row=0, column=0, padx=10, pady=5)
+        self.dni_cliente = ttk.Entry(self.root)
+        self.dni_cliente.grid(row=0, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Nombre del Cliente:").grid(row=1, column=0, padx=10, pady=5)
+        self.nombre_cliente = ttk.Entry(self.root)
+        self.nombre_cliente.grid(row=1, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Apellido del Cliente:").grid(row=2, column=0, padx=10, pady=5)
+        self.apellido_cliente = ttk.Entry(self.root)
+        self.apellido_cliente.grid(row=2, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Teléfono:").grid(row=3, column=0, padx=10, pady=5)
+        self.telefono_cliente = ttk.Entry(self.root)
+        self.telefono_cliente.grid(row=3, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Cuenta Bancaria:").grid(row=4, column=0, padx=10, pady=5)
+        self.cuenta_cliente = ttk.Entry(self.root)
+        self.cuenta_cliente.grid(row=4, column=1, padx=10, pady=5)
+
+        # tabla mascotas
+        ttk.Label(self.root, text="Nombre de la Mascota:").grid(row=5, column=0, padx=10, pady=5)
+        self.nombre_mascota = ttk.Entry(self.root)
+        self.nombre_mascota.grid(row=5, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Tipo de Mascota (e.g., Perro, Gato):").grid(row=6, column=0, padx=10, pady=5)
+        self.tipo_mascota = ttk.Entry(self.root)
+        self.tipo_mascota.grid(row=6, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Edad de la Mascota:").grid(row=7, column=0, padx=10, pady=5)
+        self.edad_mascota = ttk.Entry(self.root)
+        self.edad_mascota.grid(row=7, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Raza de la Mascota:").grid(row=8, column=0, padx=10, pady=5)
+        self.raza_mascota = ttk.Entry(self.root)
+        self.raza_mascota.grid(row=8, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="Vacunas (Sí/No):").grid(row=9, column=0, padx=10, pady=5)
+        self.vacunas_mascota = ttk.Entry(self.root)
+        self.vacunas_mascota.grid(row=9, column=1, padx=10, pady=5)
+
+        ttk.Label(self.root, text="¿Tiene operación? (Sí/No):").grid(row=10, column=0, padx=10, pady=5)
+        self.operacion_mascota = ttk.Entry(self.root)
+        self.operacion_mascota.grid(row=10, column=1, padx=10, pady=5)
+
+
+        ttk.Button(self.root, text="Agregar Cliente y Mascota", command=self.agregar_cliente_mascota).grid(row=11, column=0, padx=10, pady=20)
+        ttk.Button(self.root, text="Ver Agenda Clientes", command=self.mostrar_agenda_clientes).grid(row=11, column=1, padx=10, pady=20)
+        ttk.Button(self.root, text="Ver Agenda Mascotas", command=self.mostrar_agenda_mascotas).grid(row=11, column=2, padx=10, pady=20)
+
+    def agregar_cliente_mascota(self):
+
+        dni = self.dni_cliente.get()
+        nombre_cliente = self.nombre_cliente.get()
+        apellido_cliente = self.apellido_cliente.get()
+        telefono = self.telefono_cliente.get()
+        cuenta = self.cuenta_cliente.get()
+
+        nombre_mascota = self.nombre_mascota.get()
+        tipo = self.tipo_mascota.get()
+        edad = self.edad_mascota.get()
+        raza = self.raza_mascota.get()
+        vacunas = self.vacunas_mascota.get()
+        operacion = self.operacion_mascota.get()
+
+
+        if not (dni and nombre_cliente and apellido_cliente and telefono and cuenta and nombre_mascota and tipo and edad and raza and vacunas and operacion):
+            messagebox.showwarning("Campos incompletos", "Por favor completa todos los campos.")
+            return
+
+        # Agregar cliente y mascota a las listas
+        cliente = {
+            "DNI": dni,
+            "nombre_cliente": nombre_cliente,
+            "apellido_cliente": apellido_cliente,
+            "telefono": telefono,
+            "cuenta_bancaria": cuenta,
+        }
+        mascota = {
+            "nombre_mascota": nombre_mascota,
+            "tipo": tipo,
+            "edad": edad,
+            "raza": raza,
+            "vacunas": vacunas,
+            "operacion": operacion,
+            "cliente_nombre": f"{nombre_cliente} {apellido_cliente}",
+            "cliente_dni": dni,
+        }
+        self.clientes.append(cliente)
+        self.mascotas.append(mascota)
+
+
+        for field in [self.dni_cliente, self.nombre_cliente, self.apellido_cliente, self.telefono_cliente, self.cuenta_cliente,
+                      self.nombre_mascota, self.tipo_mascota, self.edad_mascota, self.raza_mascota,
+                      self.vacunas_mascota, self.operacion_mascota]:
+            field.delete(0, tk.END)
+
+        messagebox.showinfo("Cliente y Mascota agregados", f"{nombre_cliente} {apellido_cliente} y su mascota {nombre_mascota} han sido añadidos a la agenda.")
+
+    def mostrar_agenda_clientes(self):
+
+        agenda_ventana = tk.Toplevel(self.root)
+        agenda_ventana.title("Agenda de Clientes")
+        agenda_ventana.geometry("500x300")
+
+
+        ttk.Label(agenda_ventana, text="DNI", font=('Arial', 10, 'bold')).grid(row=0, column=0, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Nombre", font=('Arial', 10, 'bold')).grid(row=0, column=1, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Apellido", font=('Arial', 10, 'bold')).grid(row=0, column=2, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Teléfono", font=('Arial', 10, 'bold')).grid(row=0, column=3, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Cuenta Bancaria", font=('Arial', 10, 'bold')).grid(row=0, column=4, padx=5, pady=5)
+
+
+        for idx, cliente in enumerate(self.clientes, start=1):
+            ttk.Label(agenda_ventana, text=cliente["DNI"]).grid(row=idx, column=0, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=cliente["nombre_cliente"]).grid(row=idx, column=1, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=cliente["apellido_cliente"]).grid(row=idx, column=2, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=cliente["telefono"]).grid(row=idx, column=3, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=cliente["cuenta_bancaria"]).grid(row=idx, column=4, padx=5, pady=5)
+
+    def mostrar_agenda_mascotas(self):
+
+        agenda_ventana = tk.Toplevel(self.root)
+        agenda_ventana.title("Agenda de Mascotas")
+        agenda_ventana.geometry("700x300")
+
+
+
+        ttk.Label(agenda_ventana, text="Nombre", font=('Arial', 10, 'bold')).grid(row=0, column=0, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Tipo", font=('Arial', 10, 'bold')).grid(row=0, column=1, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Edad", font=('Arial', 10, 'bold')).grid(row=0, column=2, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Raza", font=('Arial', 10, 'bold')).grid(row=0, column=3, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Vacunas", font=('Arial', 10, 'bold')).grid(row=0, column=4, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Operación", font=('Arial', 10, 'bold')).grid(row=0, column=5, padx=5, pady=5)
+        ttk.Label(agenda_ventana, text="Cliente (Nombre y DNI)", font=('Arial', 10, 'bold')).grid(row=0, column=6, padx=5, pady=5)
+
+        for idx, mascota in enumerate(self.mascotas, start=1):
+            ttk.Label(agenda_ventana, text=mascota["nombre_mascota"]).grid(row=idx, column=0, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=mascota["tipo"]).grid(row=idx, column=1, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=mascota["edad"]).grid(row=idx, column=2, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=mascota["raza"]).grid(row=idx, column=3, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=mascota["vacunas"]).grid(row=idx, column=4, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=mascota["operacion"]).grid(row=idx, column=5, padx=5, pady=5)
+            ttk.Label(agenda_ventana, text=f"{mascota['cliente_nombre']} (DNI: {mascota['cliente_dni']})").grid(row=idx, column=6, padx=5, pady=5)
+
+# Ejecutar la aplicación
+root = tk.Tk()
+app = Veterinaria(root)
+root.mainloop()
+
